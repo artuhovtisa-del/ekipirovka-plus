@@ -59,7 +59,7 @@ const App = (() => {
               ${cats.map(c => `<a href="#/catalog?cat=${encodeURIComponent(c)}">${esc(c)}</a>`).join('')}
             </div>
           </div>
-          ${Store.isAdmin() ? `<div class="hn dd"><button class="hn">Админ ▾</button><div class="dd__menu">${Icons.box}<a href="#/admin/products">Товары</a><a href="#/admin/orders">Заказы</a></div></div>` : ''}
+          ${Store.isAdmin() ? `<div class="hn dd"><button class="hn" data-ddbutton>Админ ▾</button><div class="dd__menu">${Icons.box}<a href="#/admin/products">Товары</a><a href="#/admin/orders">Заказы</a></div></div>` : ''}
         </div>
         <div class="header-actions">
           <a class="hbtn ${favCount ? 'hbtn--hot' : ''}" href="#/profile/favorites" aria-label="Избранное">${Icons.heart}<span class="hbtn__badge">${favCount || ''}</span></a>

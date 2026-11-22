@@ -11,7 +11,7 @@ const App = (() => {
     { re: /^#\/profile\/favorites$/, render: () => Pages.favorites() },
     { re: /^#\/profile$/, render: () => Pages.profile() },
     { re: /^#\/admin\/products$/, render: () => Pages.adminProducts() },
-    { re: /^#\/admin\/orders$/, render: () => Pages.adminOrders() },
+    { re: /^#\/admin\/orders(?:\?([^#]*))?$/, render: (m) => Pages.adminOrders() },
   ];
 
   let currentRoute = null;
@@ -265,14 +265,7 @@ const App = (() => {
       return;
     }
 
-    // изменение статуса заказа в админке
-    if (t.matches('[data-ostatus]')) {
-      const id = t.dataset.id;
-      const orders = DB.orders();
-      const o = orders.find(x => x.id === Number(id));
-      if (o) { o.status = t.value; DB.saveOrders(orders); toast('Статус обновлён'); }
-      return;
-    }
+    // изменение статуса заказа в админке (вызывается через onDocChange)
 
     if (t.matches('[data-logout]')) { Store.logout(); return; }
   }
@@ -313,6 +306,23 @@ const App = (() => {
       return;
     }
     if (e.target.matches('[data-reset]')) { location.hash = '#/catalog'; return; }
+
+    // админ: смена статуса заказа
+    if (e.target.matches('[data-ostatus]')) {
+      const id = e.target.dataset.id;
+      const orders = DB.orders();
+      const o = orders.find(x => x.id === Number(id));
+      if (o) { o.status = e.target.value; DB.saveOrders(orders); toast('Статус заказа №' + id + ' обновлён'); }
+      return;
+    }
+
+    // админ: фильтр заказов по статусу
+    if (e.target.matches('[data-ordstat]')) {
+      const q = new URLSearchParams(location.hash.split('?')[1] || '');
+      e.target.value ? q.set('status', e.target.value) : q.delete('status');
+      location.hash = '#/admin/orders' + (q.toString() ? '?' + q.toString() : '');
+      return;
+    }
 
     // автодополнение при вводе поиска
     if (e.target.matches('[data-search]')) {

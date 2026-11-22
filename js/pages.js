@@ -579,15 +579,19 @@ const Pages = {
   // ---------------- Админ: заказы ----------------
   adminOrders() {
     if (!Store.isAdmin()) return Pages.forbidden();
-    const orders = DB.orders().slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const q = new URLSearchParams(location.hash.split('?')[1] || '');
+    const statusFilter = q.get('status') || '';
+    let orders = DB.orders().slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (statusFilter) orders = orders.filter(o => o.status === statusFilter);
     const clients = DB.clients();
     return `
     <nav class="crumbs"><a href="#/">Главная</a>›<a href="#/admin/orders">Админ</a>›<span>Заказы</span></nav>
     <h1>Управление заказами</h1>
     <div class="tools">
       <select data-ordstat><option value="">Все статусы</option>
-        ${Object.entries(STATUS_MAP).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}
+        ${Object.entries(STATUS_MAP).map(([k, v]) => `<option value="${k}" ${statusFilter === k ? 'selected' : ''}>${v}</option>`).join('')}
       </select>
+      <span class="muted">Найдено: ${orders.length}</span>
     </div>
     <div class="orders">
       ${orders.map(o => {

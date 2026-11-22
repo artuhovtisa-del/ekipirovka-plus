@@ -151,7 +151,7 @@ const App = (() => {
   }
 
   function onDocClick(e) {
-    const t = e.target.closest('[data-action],[data-cartbtn],[data-cartqty],[data-cartval],[data-cartdel],[data-burger],[data-ddbutton],[data-ddmenu] a,[data-cartclose],[data-close],[data-step],[data-next],[data-prev]');
+    const t = e.target.closest('[data-action],[data-cartbtn],[data-cartqty],[data-cartval],[data-cartdel],[data-burger],[data-ddbutton],[data-ddmenu] a,[data-cartclose],[data-close],[data-step],[data-next],[data-prev],[data-logout],[data-addprod],[data-editprod],[data-delprod],[data-ostatus]');
     if (!t) return;
 
     // модалка закрытие

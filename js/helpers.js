@@ -34,7 +34,7 @@ function productCard(p) {
   return `
   <article class="card" data-id="${p.id}">
     <a class="card__img" href="#/product/${p.id}">
-      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" />
+      <img src="${esc(p.image)}" alt="${esc(p.title)}" />
       ${badge}
     </a>
     <button class="card__fav ${fav}" data-action="fav" data-id="${p.id}" aria-label="В избранное">

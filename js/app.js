@@ -340,10 +340,9 @@ const App = (() => {
       const phone = form.querySelector('[name=phone]')?.value || '';
       const address = form.querySelector('[name=address]')?.value || '';
       const errEl = form.querySelector('[data-aerr]');
-      let res;
-      if (form.closest('#/register'.length > 0) || true) {
-        res = location.hash.startsWith('#/register') ? Store.register(name, email, pass, phone, address) : Store.login(email, pass);
-      }
+      const res = location.hash.startsWith('#/register')
+        ? Store.register(name, email, pass, phone, address)
+        : Store.login(email, pass);
       if (res.error) { errEl.textContent = res.error; errEl.hidden = false; return; }
       errEl.hidden = true;
       toast('Добро пожаловать!');

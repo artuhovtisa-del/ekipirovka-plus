@@ -1,7 +1,7 @@
 ﻿const Store = (() => {
   function emit() { window.dispatchEvent(new CustomEvent('store:change')); }
 
-  // ---------- РљРѕСЂР·РёРЅР° (CartContext) ----------
+  // Корзина (CartContext)
   const CART_KEY = 'ekp_cart';
   function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch { return {}; } }
   function saveCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
@@ -26,7 +26,7 @@
   }
   function clearCart() { saveCart({}); emit(); }
 
-  // ---------- РђРІС‚РѕСЂРёР·Р°С†РёСЏ (AuthContext) ----------
+  // Авторизация (AuthContext)
   const AUTH_KEY = 'ekp_auth';
   function currentUser() {
     const id = localStorage.getItem(AUTH_KEY);
@@ -37,15 +37,15 @@
   const isAdmin = () => { const u = currentUser(); return u && u.role === 'admin'; };
   function login(email, password) {
     const u = DB.clients().find(c => c.email.toLowerCase() === email.toLowerCase());
-    if (!u) return { error: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРј email РЅРµ РЅР°Р№РґРµРЅ' };
-    if (u.password !== password) return { error: 'РќРµРІРµСЂРЅС‹Р№ РїР°СЂРѕР»СЊ' };
+    if (!u) return { error: 'Пользователь с таким email не найден' };
+    if (u.password !== password) return { error: 'Неверный пароль' };
     localStorage.setItem(AUTH_KEY, u.id); emit();
     return { user: u };
   }
   function register(name, email, password, phone, address) {
     const existing = DB.clients().some(c => c.email.toLowerCase() === email.toLowerCase());
-    if (existing) return { error: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРј email СѓР¶Рµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ' };
-    if (password.length < 5) return { error: 'РџР°СЂРѕР»СЊ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅРµ РєРѕСЂРѕС‡Рµ 5 СЃРёРјРІРѕР»РѕРІ' };
+    if (existing) return { error: 'Пользователь с таким email уже зарегистрирован' };
+    if (password.length < 5) return { error: 'Пароль должен быть не короче 5 символов' };
     const clients = DB.clients();
     const user = { id: DB.nextId(clients, 100), name, email, phone, address, role: 'client', password };
     clients.push(user); DB.saveClients(clients);
@@ -54,7 +54,7 @@
   }
   function logout() { localStorage.removeItem(AUTH_KEY); emit(); location.hash = '/'; }
 
-  // ---------- РР·Р±СЂР°РЅРЅРѕРµ ----------
+  // Избранное
   const FAV_KEY = 'ekp_fav';
   function favList() { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } }
   function inFav(id) { return favList().includes(Number(id)); }
